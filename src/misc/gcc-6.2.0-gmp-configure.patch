@@ -1,0 +1,65 @@
+--- src/gcc-6.2.0/gmp/configure	2022-08-31 14:50:28.000000000 -0400
++++ src/gcc-6.2.0/gmp/configure	2022-08-31 14:51:36.000000000 -0400
+@@ -8618,7 +8618,7 @@
+ int
+ main ()
+ {
+-  exit(0);
++  return 0;
+ }
+ EOF
+ gmp_compile="$CC_FOR_BUILD conftest.c"
+@@ -8652,7 +8652,7 @@
+ int
+ main ()
+ {
+-  exit(0);
++  return 0;
+ }
+ EOF
+ gmp_compile="$HOST_CC conftest.c"
+@@ -8687,7 +8687,7 @@
+ int
+ main ()
+ {
+-  exit(0);
++  return 0;
+ }
+ EOF
+ gmp_compile="$i conftest.c"
+@@ -8770,7 +8770,7 @@
+ int
+ main ()
+ {
+-  exit (0);
++  return 0;
+ }
+ EOF
+ for i in .exe ,ff8 ""; do
+@@ -8809,7 +8809,7 @@
+ int
+ main (int argc, char **argv)
+ {
+-  exit(0);
++  return 0;
+ }
+ EOF
+ gmp_compile="$CC_FOR_BUILD conftest.c"
+@@ -8844,7 +8844,7 @@
+ int
+ main ()
+ {
+-  exit(0);
++  return 0;
+ }
+ double d;
+ double
+@@ -28963,7 +28963,7 @@
+ main ()
+ {
+ $i
+-  exit (0);
++  return 0;
+ }
+ 
+ _ACEOF
