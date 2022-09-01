@@ -165,6 +165,10 @@ if [ $tool == "all" -o $tool == "gcc" ]; then
 fi
 if [ $tool == "all" -o $tool == "gdb" ]; then
   download_and_check https://ftp.gnu.org/gnu/gdb/gdb-7.9.1.tar.xz cd9c543a411a05b2b647dd38936034b68c2b5d6f10e0d51dc168c166c973ba40
+  echo "Patching GDB..."
+  pushd $CWD/src/gdb-7.9.1
+  cat $SCRIPT_DIR/gdb-7.9.1-python.patch | patch -p2
+  popd
 fi
 
 if [ $tool == "all" -o $tool == "binutils" ]; then
@@ -191,7 +195,7 @@ fi
 if [ $tool == "all" -o $tool == "gdb" ]; then
   echo "Building gdb..."
   mkdir -p $CWD/build/gdb && cd $CWD/build/gdb 
-  ../../src/gdb-7.9.1/configure --prefix=$PREFIX --target=$TARGET --disable-werror || perror "Failed to configure gdb"
+  ../../src/gdb-7.9.1/configure CFLAGS="-Wno-implicit-function-declaration" --prefix=$PREFIX --target=$TARGET --disable-werror || perror "Failed to configure gdb"
   make -j8 || perror "Failed to make gdb"
   make install
 fi
