@@ -153,8 +153,14 @@ if [ $tool == "all" -o $tool == "gcc" ]; then
     cd $CWD/src/gcc-6.2.0 && contrib/download_prerequisites || perror "Failed to download pre-requisite for GCC"
   fi
   echo "Patching GCC..."
+  # Fix a number of bugs that would fail the build on recent macOS environment
   pushd $CWD/src/gcc-6.2.0
   cat $SCRIPT_DIR/gcc-6.2.0-ubsan.patch | patch -p2
+  cat $SCRIPT_DIR/gcc-6.2.0-gmp-configure.patch | patch -p2
+  cat $SCRIPT_DIR/gcc-6.2.0-genconditions.patch | patch -p2
+  # macOS file system is case-insensitive, so the VERSION file will be treated
+  # as 'version' and cause a cascading chain of nasty issues during GCC build..
+  [ -f mpfr/VERSION ] && mv mpfr/VERSION mpfr/VERSION_
   popd
 fi
 if [ $tool == "all" -o $tool == "gdb" ]; then
@@ -175,7 +181,7 @@ if [ $tool == "all" -o $tool == "gcc" ]; then
   mkdir -p $CWD/build/gcc && cd $CWD/build/gcc 
   ../../src/gcc-6.2.0/configure CXXFLAGS="-fpermissive" --prefix=$PREFIX --target=$TARGET \
     --disable-multilib --disable-nls --disable-werror --disable-libssp \
-    --disable-libmudflap --with-newlib --without-headers --enable-languages=c,c++ || perror "Failed to configure gcc"
+    --disable-libmudflap --with-newlib --without-headers --enable-languages=c || perror "Failed to configure gcc"
   make -j8 all-gcc  || perror "Failed to make gcc"
   make install-gcc
   make all-target-libgcc || perror "Failed to libgcc"
