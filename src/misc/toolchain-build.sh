@@ -164,10 +164,10 @@ if [ $tool == "all" -o $tool == "gcc" ]; then
   popd
 fi
 if [ $tool == "all" -o $tool == "gdb" ]; then
-  download_and_check https://ftp.gnu.org/gnu/gdb/gdb-7.9.1.tar.xz cd9c543a411a05b2b647dd38936034b68c2b5d6f10e0d51dc168c166c973ba40
+  download_and_check https://ftp.gnu.org/gnu/gdb/gdb-7.12.1.tar.xz 4607680b973d3ec92c30ad029f1b7dbde3876869e6b3a117d8a7e90081113186
   echo "Patching GDB..."
-  pushd $CWD/src/gdb-7.9.1
-  cat $SCRIPT_DIR/gdb-7.9.1-python.patch | patch -p2
+  pushd $CWD/src/gdb-7.12.1
+  cat $SCRIPT_DIR/gdb-7.12.1-python.patch | patch -p2
   popd
 fi
 
@@ -195,7 +195,7 @@ fi
 if [ $tool == "all" -o $tool == "gdb" ]; then
   echo "Building gdb..."
   mkdir -p $CWD/build/gdb && cd $CWD/build/gdb 
-  ../../src/gdb-7.9.1/configure CFLAGS="-Wno-implicit-function-declaration" --prefix=$PREFIX --target=$TARGET --disable-werror --with-python=no || perror "Failed to configure gdb"
+  ../../src/gdb-7.12.1/configure CFLAGS="-Wno-implicit-function-declaration" --prefix=$PREFIX --target=$TARGET --disable-werror --with-python=no || perror "Failed to configure gdb"
   make -j8 || perror "Failed to make gdb"
   make install
 fi
