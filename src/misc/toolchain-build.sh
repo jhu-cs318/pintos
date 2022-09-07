@@ -35,11 +35,11 @@ download_and_check()
   echo "Downloaded and verified $fname from $1"
   if [ ! -d $fdirname ]; then
     echo "Extracting $fname to $fdirname..."
-    if [ $fname == *.tar.gz ]; then
+    if [[ $fname == *.tar.gz ]]; then
       tar xzf $fname 
-    elif [ $fname == *.tar.bz2 ]; then
+    elif [[ $fname == *.tar.bz2 ]]; then
       tar xjf $fname
-    elif [ $fname == *.tar.xz ]; then
+    elif [[ $fname == *.tar.xz ]]; then
       tar xJf $fname
     else
       perror "Unrecognized archive extension $fname"
@@ -195,7 +195,7 @@ fi
 if [ $tool == "all" -o $tool == "gdb" ]; then
   echo "Building gdb..."
   mkdir -p $CWD/build/gdb && cd $CWD/build/gdb 
-  ../../src/gdb-7.9.1/configure CFLAGS="-Wno-implicit-function-declaration" --prefix=$PREFIX --target=$TARGET --disable-werror || perror "Failed to configure gdb"
+  ../../src/gdb-7.9.1/configure CFLAGS="-Wno-implicit-function-declaration" --prefix=$PREFIX --target=$TARGET --disable-werror --with-python=no || perror "Failed to configure gdb"
   make -j8 || perror "Failed to make gdb"
   make install
 fi
