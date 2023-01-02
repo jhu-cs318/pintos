@@ -43,7 +43,7 @@ uint32_t *init_page_dir;
 
 #ifdef FILESYS
 /* -f: Format the file system? */
-static bool format_filesys;
+static bool format_filesys;ram
 
 /* -filesys, -scratch, -swap: Names of block devices to use,
    overriding the defaults. */
@@ -64,6 +64,9 @@ static char **read_command_line (void);
 static char **parse_options (char **argv);
 static void run_actions (char **argv);
 static void usage (void);
+
+
+char* TypeOnShell(void);
 
 #ifdef FILESYS
 static void locate_block_devices (void);
@@ -134,11 +137,97 @@ pintos_init (void)
     run_actions (argv);
   } else {
     // TODO: no command line passed to kernel. Run interactively 
-  }
+    printf("-------------------------Hello---------------------------\n");
+    printf("-----------------Welcome to pintOS HELL------------------\n");
+    while (true)
+    {
+      printf("\nCS2042>");
 
+      char* word=malloc(sizeof(char));
+      word=(char*)TypeOnShell();
+
+      if (compare(word,"whoami"))
+      {
+        printf("\nGinushmal Wikumjith - 200734G");
+      }
+      else if (compare(word,"shutdown"))
+      {
+        shutdown_power_off();
+      }
+      else if (compare(word,"time"))
+      {
+        int time=(int)rtc_get_time();
+        printf("%d\n",time);
+      }
+      else if(compare(word,"ram"))
+      {
+        printf("\n");
+        printf (" %'"PRIu32" kB RAM...\n",init_ram_pages * PGSIZE / 1024);
+      }
+      else if (compare(word,"thread"))
+      {
+        printf("\n");
+        thread_print_stats();
+      }
+      else if (compare(word,"priority"))
+      {
+          int priority=thread_get_priority();
+          printf("\n%d\n",priority);
+      }
+      else if (compare(word,"exit"))
+      {
+        break;
+      }
+      else
+      {
+        printf("\nInvalid Command");
+      }
+    }
+  }
+ 
   /* Finish up. */
   shutdown ();
   thread_exit ();
+}
+
+int compare(char* word,char* command)
+{
+  int i=0;
+  while (word[i]!='\0')
+  {
+    if (word[i]!=command[i])
+    {
+      return 0;
+    }
+    i++;
+  }
+  return 1;
+}
+char* TypeOnShell(void){
+  char* word = (char*)malloc(sizeof(char) * 100);
+  int i = 0;
+  while(1){
+    char* input= malloc(sizeof(char));
+    uint8_t inputChar=input_getc();
+    *input = inputChar;
+    if(inputChar == 13){
+      word[i] = 0x00;
+      break;
+    }
+    else if(inputChar == 8){
+      if(i >0){
+        printf("%s","\b \b");
+        word[i]=0x00;
+        i--;
+      }
+    }
+    else{
+      printf("%c",inputChar);
+      word[i]=inputChar;
+      i++;
+      }
+  }
+  return word;
 }
 
 /* Clear the "BSS", a segment that should be initialized to

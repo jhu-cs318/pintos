@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "kbd.h": "c",
+        "string.h": "c",
+        "input.h": "c",
+        "inttypes.h": "c",
+        "timer.h": "c",
+        "shutdown.h": "c"
+    }
+}
