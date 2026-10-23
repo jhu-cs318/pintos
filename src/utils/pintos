@@ -636,6 +636,7 @@ sub run_qemu {
   push (@cmd, '-drive', 'format=raw,media=disk,index=3,file=' . $disks[3]) if defined $disks[3];
   push (@cmd, '-m', $mem);
   push (@cmd, '-net', 'none');
+  push (@cmd, '-no-reboot', '-no-shutdown', '-d', 'int,cpu_reset', '-D', '/tmp/qemu_debug.log'); 
   push (@cmd, '-nographic') if $vga eq 'none';
   push (@cmd, '-serial', 'stdio') if $serial && $vga ne 'none';
   push (@cmd, '-S') if $debug eq 'monitor';

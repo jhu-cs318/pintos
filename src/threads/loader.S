@@ -21,7 +21,7 @@
 # Set stack to grow downward from 60 kB (after boot, the kernel
 # continues to use this stack for its initial thread).
 
-	sub %ax, %ax
+	sub %ax, %ax #<--answer for the first queston
 	mov %ax, %ds
 	mov %ax, %ss
 	mov $0xf000, %esp

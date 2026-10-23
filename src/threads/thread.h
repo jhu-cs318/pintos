@@ -3,6 +3,7 @@
 
 #include <debug.h>
 #include <list.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 /* States in a thread's life cycle. */
@@ -80,6 +81,10 @@ typedef int tid_t;
    only because they are mutually exclusive: only a thread in the
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
+
+struct process_child;
+struct file;
+
 struct thread
   {
     /* Owned by thread.c. */
@@ -87,13 +92,28 @@ struct thread
     enum thread_status status;          /* Thread state. */
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
-    int priority;                       /* Priority. */
+    int priority;                       /* Effective priority. */
+    int base_priority;                  /* Priority without donations. */
+   int nice;                            /* Niceness for the MLFQS. */
+   int recent_cpu;                     /* Recent CPU in fixed-point format. */
+    int64_t wakeup_tick;                /* Tick at which the thread wakes. */
     struct list_elem allelem;           /* List element for all threads list. */
+    struct list locks_held;             /* Locks currently held. */
+    struct lock *waiting_lock;          /* Lock this thread is waiting for. */
+    struct semaphore *waiting_semaphore; /* Semaphore this thread is waiting for. */
 
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
 #ifdef USERPROG
+   struct list children;               /* Child process records. */
+   struct process_child *child_record; /* This process's parent record. */
+   int exit_status;                    /* Status reported on exit. */
+   bool user_loaded;                   /* Executable loaded successfully. */
+   struct file *executable;            /* Running executable. */
+   struct list fds;                    /* Open file descriptors. */
+   int next_fd;                        /* Next descriptor to allocate. */
+
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
 #endif
@@ -107,6 +127,8 @@ struct thread
    Controlled by kernel command-line option "-o mlfqs". */
 extern bool thread_mlfqs;
 
+struct lock;
+
 void thread_init (void);
 void thread_start (void);
 
@@ -118,6 +140,7 @@ tid_t thread_create (const char *name, int priority, thread_func *, void *);
 
 void thread_block (void);
 void thread_unblock (struct thread *);
+void thread_recalculate_priority (struct thread *);
 
 struct thread *thread_current (void);
 tid_t thread_tid (void);
